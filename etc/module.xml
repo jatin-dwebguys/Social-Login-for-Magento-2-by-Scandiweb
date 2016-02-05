@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Scandiweb_SocialLogin
+ *
+ * @category    Scandiweb
+ * @package     Scandiweb_SocialLogin
+ * @author      Viktors Vipolzovs <info@scandiweb.com>
+ * @copyright   Copyright (c) 2016 Scandiweb, Ltd (http://scandiweb.com)
+ */
+-->
+<config>
+    <module name="Scandiweb_SocialLogin" setup_version="0.0.1"/>
+</config>
