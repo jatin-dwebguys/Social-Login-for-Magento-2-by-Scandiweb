@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Scandiweb_SocialLogin
+*
+* @category    Scandiweb
+* @package     Scandiweb_SocialLogin
+* @author      Viktors Vipolzovs <info@scandiweb.com>
+* @copyright   Copyright (c) 2016 Scandiweb, Ltd (http://scandiweb.com)
+*/
+-->
+<validation>
+    <entity name="sociallogin_customer">
+        <rules>
+            <rule name="check_eav">
+                <entity_constraints>
+                    <constraint alias="eav_data_validator" class="Scandiweb\SocialLogin\Model\Validator\Attribute\Data" />
+                </entity_constraints>
+            </rule>
+        </rules>
+
+        <groups>
+            <group name="save">
+                <uses>
+                    <use rule="check_eav"/>
+                </uses>
+            </group>
+        </groups>
+    </entity>
+</validation>

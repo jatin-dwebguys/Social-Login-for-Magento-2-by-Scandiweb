@@ -11,7 +11,7 @@
 namespace Scandiweb\SocialLogin\Controller\Login;
 
 use Hybrid_User_Profile;
-use Magento\Customer\Api\AccountManagementInterface;
+use Scandiweb\SocialLogin\Api\AccountManagementInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\ResponseInterface;
@@ -171,11 +171,12 @@ abstract class AbstractProviderAction extends Action
         $this->customer->setCustomAttribute('scandi_provider_user_id', $facebookUser->identifier);
         $this->customer->setCustomAttribute('scandi_provider_name', $this->provider);
 
-        if ($this->customer->getId()) {
+        $customer = $this->customerRepository->save($this->customer);
+        /*if ($this->customer->getId()) {
             $customer = $this->customerRepository->save($this->customer);
         } else {
             $customer = $this->accountManagement->createAccount($this->customer);
-        }
+        }*/
 
         return $customer;
     }
