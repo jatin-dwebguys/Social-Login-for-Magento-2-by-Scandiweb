@@ -1,9 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: viktor
- * Date: 16.6.2
- * Time: 15:54
+ * Scandiweb_SocialLogin
+ *
+ * @category    Scandiweb
+ * @package     Scandiweb_SocialLogin
+ * @author      Viktors Vipolzovs <info@scandiweb.com>
+ * @copyright   Copyright (c) 2016 Scandiweb, Ltd (http://scandiweb.com)
  */
 
 namespace Scandiweb\SocialLogin\Controller\Endpoint;
