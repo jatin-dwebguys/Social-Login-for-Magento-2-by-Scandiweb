@@ -26,11 +26,6 @@ class InstallData implements InstallDataInterface
     private $eavSetupFactory;
 
     /**
-     * @var EavSetup
-     */
-    private $eavSetup;
-
-    /**
      * InstallSchema constructor
      *
      * @param EavSetupFactory $eavSetupFactory
@@ -52,181 +47,32 @@ class InstallData implements InstallDataInterface
         ModuleDataSetupInterface $setup,
         ModuleContextInterface $context
     ) {
-        $this->eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
+        /** @var $eavSetup EavSetup */
+        $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
 
-        $this->createFacebookAttributes();
-        $this->createTwitterAttributes();
-        $this->createGoogleAttributes();
-        $this->createInstagramAttributes();
-        $this->createYahooAttributes();
-    }
-
-    /**
-     * Create facebook attributes
-     *
-     * @return void
-     */
-    private function createFacebookAttributes()
-    {
-        $this->eavSetup->addAttribute(
+        $eavSetup->addAttribute(
             CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER,
-            'scandi_facebook_id',
+            'scandi_provider_user_id',
             [
                 'type'     => 'text',
                 'visible'  => false,
                 'required' => true,
                 'unique'   => true,
                 'system'   => 0,
-                'note'     => 'Facebook Id',
+                'note'     => 'User Id',
             ]
         );
 
-        $this->eavSetup->addAttribute(
+        $eavSetup->addAttribute(
             CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER,
-            'scandi_facebook_user',
+            'scandi_provider_name',
             [
-                'type'     => 'text',
+                'type'     => 'varchar',
                 'visible'  => false,
                 'required' => true,
                 'unique'   => true,
                 'system'   => 0,
-                'note'     => 'Facebook User',
-            ]
-        );
-    }
-
-    /**
-     * Create twitter attributes
-     *
-     * @return void
-     */
-    private function createTwitterAttributes()
-    {
-        $this->eavSetup->addAttribute(
-            CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER,
-            'scandi_twitter_id',
-            [
-                'type'     => 'text',
-                'visible'  => false,
-                'required' => true,
-                'unique'   => true,
-                'system'   => 0,
-                'note'     => 'Twitter Id',
-            ]
-        );
-
-        $this->eavSetup->addAttribute(
-            CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER,
-            'scandi_twitter_user',
-            [
-                'type'     => 'text',
-                'visible'  => false,
-                'required' => true,
-                'unique'   => true,
-                'system'   => 0,
-                'note'     => 'Twitter User',
-            ]
-        );
-    }
-
-    /**
-     * Create google attributes
-     *
-     * @return void
-     */
-    private function createGoogleAttributes()
-    {
-        $this->eavSetup->addAttribute(
-            CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER,
-            'scandi_google_id',
-            [
-                'type'     => 'text',
-                'visible'  => false,
-                'required' => true,
-                'unique'   => true,
-                'system'   => 0,
-                'note'     => 'Google Id',
-            ]
-        );
-
-        $this->eavSetup->addAttribute(
-            CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER,
-            'scandi_google_user',
-            [
-                'type'     => 'text',
-                'visible'  => false,
-                'required' => true,
-                'unique'   => true,
-                'system'   => 0,
-                'note'     => 'Google User',
-            ]
-        );
-    }
-
-    /**
-     * Create instagram attributes
-     *
-     * @return void
-     */
-    private function createInstagramAttributes()
-    {
-        $this->eavSetup->addAttribute(
-            CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER,
-            'scandi_instagram_id',
-            [
-                'type'     => 'text',
-                'visible'  => false,
-                'required' => true,
-                'unique'   => true,
-                'system'   => 0,
-                'note'     => 'Instagram Id',
-            ]
-        );
-
-        $this->eavSetup->addAttribute(
-            CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER,
-            'scandi_instagram_user',
-            [
-                'type'     => 'text',
-                'visible'  => false,
-                'required' => true,
-                'unique'   => true,
-                'system'   => 0,
-                'note'     => 'Instagram User',
-            ]
-        );
-    }
-
-    /**
-     * Create yahoo attributes
-     *
-     * @return void
-     */
-    private function createYahooAttributes()
-    {
-        $this->eavSetup->addAttribute(
-            CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER,
-            'scandi_yahoo_id',
-            [
-                'type'     => 'text',
-                'visible'  => false,
-                'required' => true,
-                'unique'   => true,
-                'system'   => 0,
-                'note'     => 'Yahoo Id',
-            ]
-        );
-
-        $this->eavSetup->addAttribute(
-            CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER,
-            'scandi_yahoo_user',
-            [
-                'type'     => 'text',
-                'visible'  => false,
-                'required' => true,
-                'unique'   => true,
-                'system'   => 0,
-                'note'     => 'Yahoo User',
+                'note'     => 'Provider name',
             ]
         );
     }
