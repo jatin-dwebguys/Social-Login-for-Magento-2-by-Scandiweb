@@ -106,6 +106,19 @@ abstract class AbstractProviderAction extends Action
             } else {
                 try {
                     $this->customer = $this->customerRepository->get($user->email);
+
+                    if ($this->customer->getId()
+                        && $this->customer->getCustomAttribute('scandi_provider_user_id')
+                        && $this->customer->getCustomAttribute('scandi_provider_name')
+                    ) {
+                        $provider = $this->customer->getCustomAttribute('scandi_provider_name')->getValue();
+
+                        throw new \Exception(__(
+                            'This user is already using another entrance through the social network. Log into the system through %1.',
+                            ucfirst($provider)
+                        ));
+                    }
+
                 } finally {
                     $customer = $this->create($user);
 
