@@ -171,12 +171,11 @@ abstract class AbstractProviderAction extends Action
         $this->customer->setCustomAttribute('scandi_provider_user_id', $facebookUser->identifier);
         $this->customer->setCustomAttribute('scandi_provider_name', $this->provider);
 
-        $customer = $this->customerRepository->save($this->customer);
-        /*if ($this->customer->getId()) {
+        if ($this->customer->getId()) {
             $customer = $this->customerRepository->save($this->customer);
         } else {
             $customer = $this->accountManagement->createAccount($this->customer);
-        }*/
+        }
 
         return $customer;
     }

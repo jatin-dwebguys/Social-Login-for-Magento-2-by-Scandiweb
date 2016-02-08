@@ -34,53 +34,53 @@ use Scandiweb\SocialLogin\Model\CustomerFactory as CustomCustomerFactory;
 use Zend\EventManager\EventManager;
 
 // TODO: Rewrite this class without using MagentoCustomerRepository
-class CustomerRepository implements CustomerRepositoryInterface
+class CustomerRepository extends MagentoCustomerRepository implements CustomerRepositoryInterface
 {
 
     /**
      * @var CustomerFactory
      */
-    private $customerFactory;
+    protected $customerFactory;
 
     /**
      * @var StoreManagerInterface
      */
-    private $storeManager;
+    protected $storeManager;
 
     /**
      * @var ImageProcessorInterface
      */
-    private $imageProcessor;
+    protected $imageProcessor;
 
     /**
      * @var ExtensibleDataObjectConverter
      */
-    private $extensibleDataObjectConverter;
+    protected $extensibleDataObjectConverter;
 
     /**
      * @var CustomerRegistry
      */
-    private $customerRegistry;
+    protected $customerRegistry;
 
     /**
      * @var AddressRepository
      */
-    private $addressRepository;
+    protected $addressRepository;
 
     /**
      * @var EventManager
      */
-    private $eventManager;
+    protected $eventManager;
 
     /**
      * @var CustomerMetadataInterface
      */
-    private $customerMetadata;
+    protected $customerMetadata;
 
     /**
      * @var CustomCustomerFactory
      */
-    private $customCustomerFactory;
+    protected $customCustomerFactory;
 
     /**
      * CustomerRepository constructor.

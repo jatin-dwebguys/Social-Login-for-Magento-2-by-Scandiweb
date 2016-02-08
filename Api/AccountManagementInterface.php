@@ -53,5 +53,17 @@ interface AccountManagementInterface
         $redirectUrl = ''
     );
 
+    /**
+     * Change reset password link token
+     *
+     * Stores new reset password link token
+     *
+     * @param CustomerInterface $customer
+     * @param string $passwordLinkToken
+     * @return bool
+     * @throws InputException
+     */
+    public function changeResetPasswordLinkToken($customer, $passwordLinkToken);
+
 
 }

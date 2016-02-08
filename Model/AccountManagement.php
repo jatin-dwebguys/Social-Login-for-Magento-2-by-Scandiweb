@@ -80,6 +80,39 @@ class AccountManagement extends MagentoAccountManagement implements AccountManag
      */
     private $customCustomerRepository;
 
+    /**
+     * @var CustomerRegistry
+     */
+    private $customerRegistry;
+
+    /**
+     * AccountManagement constructor
+     *
+     * @param CustomerFactory                   $customerFactory
+     * @param ManagerInterface                  $eventManager
+     * @param StoreManagerInterface             $storeManager
+     * @param Random                            $mathRandom
+     * @param Validator                         $validator
+     * @param ValidationResultsInterfaceFactory $validationResultsDataFactory
+     * @param AddressRepositoryInterface        $addressRepository
+     * @param CustomerMetadataInterface         $customerMetadataService
+     * @param CustomerRegistry                  $customerRegistry
+     * @param PsrLogger                         $logger
+     * @param Encryptor                         $encryptor
+     * @param ConfigShare                       $configShare
+     * @param StringHelper                      $stringHelper
+     * @param CustomerRepositoryInterface       $customerRepository
+     * @param ScopeConfigInterface              $scopeConfig
+     * @param TransportBuilder                  $transportBuilder
+     * @param DataObjectProcessor               $dataProcessor
+     * @param Registry                          $registry
+     * @param CustomerViewHelper                $customerViewHelper
+     * @param DateTime                          $dateTime
+     * @param Customer                          $customerModel
+     * @param ObjectFactory                     $objectFactory
+     * @param ExtensibleDataObjectConverter     $extensibleDataObjectConverter
+     * @param CustomCustomerRepositoryInterface $customCustomerRepository
+     */
     public function __construct(
         CustomerFactory $customerFactory,
         ManagerInterface $eventManager,
@@ -110,6 +143,7 @@ class AccountManagement extends MagentoAccountManagement implements AccountManag
         $this->storeManager = $storeManager;
         $this->mathRandom = $mathRandom;
         $this->customCustomerRepository = $customCustomerRepository;
+        $this->customerRegistry = $customerRegistry;
 
         parent::__construct(
             $customerFactory,
@@ -138,6 +172,16 @@ class AccountManagement extends MagentoAccountManagement implements AccountManag
         );
     }
 
+    /**
+     * Create customer account. Perform necessary business operations like sending email.
+     *
+     * @api
+     * @param CustomerInterface $customer
+     * @param string $password
+     * @param string $redirectUrl
+     * @return CustomerInterface
+     * @throws LocalizedException
+     */
     public function createAccount(CustomerInterface $customer, $password = null, $redirectUrl = '')
     {
         if ($password !== null) {
@@ -150,6 +194,19 @@ class AccountManagement extends MagentoAccountManagement implements AccountManag
         return $this->createAccountWithPasswordHash($customer, $hash, $redirectUrl);
     }
 
+    /**
+     * Create customer account using provided hashed password. Should not be exposed as a webapi.
+     *
+     * @api
+     * @param CustomerInterface $customer
+     * @param string $hash Password hash that we can save directly
+     * @param string $redirectUrl URL fed to welcome email templates. Can be used by templates to, for example, direct
+     *                            the customer to a product they were looking at after pressing confirmation link.
+     * @return CustomerInterface
+     * @throws InputException If bad input is provided
+     * @throws InputMismatchException If the provided email is already used
+     * @throws LocalizedException
+     */
     public function createAccountWithPasswordHash(CustomerInterface $customer, $hash, $redirectUrl = '')
     {
         // This logic allows an existing customer to be added to a different store.  No new account is created.
@@ -208,6 +265,37 @@ class AccountManagement extends MagentoAccountManagement implements AccountManag
         $this->sendEmailConfirmation($customer, $redirectUrl);
 
         return $customer;
+    }
+
+    /**
+     * Change reset password link token
+     *
+     * Stores new reset password link token
+     *
+     * @param CustomerInterface $customer
+     * @param string $passwordLinkToken
+     * @return bool
+     * @throws InputException
+     */
+    public function changeResetPasswordLinkToken($customer, $passwordLinkToken)
+    {
+        if (!is_string($passwordLinkToken) || empty($passwordLinkToken)) {
+            throw new InputException(
+                __(
+                    InputException::INVALID_FIELD_VALUE,
+                    ['value' => $passwordLinkToken, 'fieldName' => 'password reset token']
+                )
+            );
+        }
+
+        if (is_string($passwordLinkToken) && !empty($passwordLinkToken)) {
+            $customerSecure = $this->customerRegistry->retrieveSecureData($customer->getId());
+            $customerSecure->setRpToken($passwordLinkToken);
+            $customerSecure->setRpTokenCreatedAt((new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT));
+            $this->customCustomerRepository->save($customer);
+        }
+
+        return true;
     }
 
 }
