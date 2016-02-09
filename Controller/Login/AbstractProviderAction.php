@@ -11,6 +11,8 @@
 namespace Scandiweb\SocialLogin\Controller\Login;
 
 use Hybrid_User_Profile;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Exception\AlreadyExistsException;
 use Scandiweb\SocialLogin\Api\AccountManagementInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\App\Action\Action;
@@ -19,6 +21,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Customer\Model\Session as CustomerSession;
 use Scandiweb\SocialLogin\Api\CustomerRepositoryInterface;
 use Scandiweb\SocialLogin\HybridAuth\HybridAuth;
+use Exception;
 
 abstract class AbstractProviderAction extends Action
 {
@@ -113,7 +116,7 @@ abstract class AbstractProviderAction extends Action
                     ) {
                         $provider = $this->customer->getCustomAttribute('scandi_provider_name')->getValue();
 
-                        throw new \Exception(__(
+                        throw new AlreadyExistsException(__(
                             'This user is already using another entrance through the social network. Log into the system through %1.',
                             ucfirst($provider)
                         ));
@@ -136,12 +139,32 @@ abstract class AbstractProviderAction extends Action
                     $this->login($customer->getId());
                 }
             }
-        } catch (\Exception $e) {
-            var_dump($e->getMessage());
-            exit;
+        } catch (AlreadyExistsException $e) {
+            $this->messageManager->addError(__(
+                $e->getMessage()
+            ));
+        } catch (Exception $e) {
+            $this->messageManager->addError(__(
+                "Oops. Something went wrong! Please try again later."
+            ));
         }
 
         $this->_redirect($this->_redirect->getRefererUrl());
+    }
+
+    /**
+     * Dispatch request
+     *
+     * @param RequestInterface $request
+     * @return $this|ResponseInterface
+     */
+    public function dispatch(RequestInterface $request)
+    {
+        if ($this->customerSession->isLoggedIn()) {
+            return $this->resultRedirectFactory->create()->setPath('*/*/');
+        }
+
+        return parent::dispatch($request);
     }
 
     /**
