@@ -22,6 +22,7 @@ use Magento\Customer\Model\Session as CustomerSession;
 use Scandiweb\SocialLogin\Api\CustomerRepositoryInterface;
 use Scandiweb\SocialLogin\HybridAuth\HybridAuth;
 use Exception;
+use Scandiweb\SocialLogin\Logger\Logger;
 
 abstract class AbstractProviderAction extends Action
 {
@@ -57,6 +58,11 @@ abstract class AbstractProviderAction extends Action
     protected $customer;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * Facebook constructor
      *
      * @param Context                     $context
@@ -72,13 +78,15 @@ abstract class AbstractProviderAction extends Action
         CustomerRepositoryInterface $customerRepository,
         CustomerSession $customerSession,
         AccountManagementInterface $accountManagement,
-        CustomerInterface $customer
+        CustomerInterface $customer,
+        Logger $logger
     ) {
         $this->hybridAuth = $hybridAuth;
         $this->customerRepository = $customerRepository;
         $this->customerSession = $customerSession;
         $this->accountManagement = $accountManagement;
         $this->customer = $customer;
+        $this->logger = $logger;
 
         parent::__construct($context);
     }
@@ -144,6 +152,8 @@ abstract class AbstractProviderAction extends Action
                 $e->getMessage()
             ));
         } catch (Exception $e) {
+            $this->logger->addError($e->getMessage());
+
             $this->messageManager->addError(__(
                 "Oops. Something went wrong! Please try again later."
             ));

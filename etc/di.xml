@@ -14,4 +14,18 @@
                 type="Scandiweb\SocialLogin\Model\ResourceModel\CustomerRepository"/>
     <preference for="Scandiweb\SocialLogin\Api\AccountManagementInterface"
                 type="Scandiweb\SocialLogin\Model\AccountManagement"/>
+
+    <type name="Scandiweb\SocialLogin\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="Scandiweb\SocialLogin\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">SocialLoginLogger</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">Scandiweb\SocialLogin\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
