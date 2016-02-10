@@ -13,6 +13,7 @@ namespace Scandiweb\SocialLogin\Controller\Login;
 use Hybrid_User_Profile;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Exception\InputException;
 use Scandiweb\SocialLogin\Api\AccountManagementInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\App\Action\Action;
@@ -133,24 +134,17 @@ abstract class AbstractProviderAction extends Action
                 } finally {
                     $customer = $this->create($user);
 
-                    if ($this->customer->getId() == $customer->getId()) {
-                        $this->messageManager->addSuccess(__(
-                            "We have discovered you already have an account at our store."
-                            . " Your %1 account is now connected to your store account.", ucfirst($this->provider)
-                        ));
-                    } else {
-                        $this->messageManager->addSuccess(__(
-                            "Your %1 account is now connected to your new user account at our store.", ucfirst($this->provider)
-                        ));
-                    }
+                    $this->messageManager->addSuccess(__(
+                        "Your %1 account is now connected to your new user account at our store.", ucfirst($this->provider)
+                    ));
 
                     $this->login($customer->getId());
                 }
             }
         } catch (AlreadyExistsException $e) {
-            $this->messageManager->addError(__(
-                $e->getMessage()
-            ));
+            $this->messageManager->addError($e->getMessage());
+        } catch (InputException $e) {
+            $this->messageManager->addError($e->getMessage());
         } catch (Exception $e) {
             $this->logger->addError($e->getMessage());
 
@@ -196,20 +190,12 @@ abstract class AbstractProviderAction extends Action
      */
     private function create(Hybrid_User_Profile $facebookUser)
     {
-        if (!$this->customer->getId()) {
-            $this->customer->setEmail($facebookUser->email);
-            $this->customer->setFirstname($facebookUser->firstName);
-            $this->customer->setLastname($facebookUser->lastName);
-        }
+        $this->customer->setEmail($facebookUser->email);
+        $this->customer->setFirstname($facebookUser->firstName);
+        $this->customer->setLastname($facebookUser->lastName);
         $this->customer->setCustomAttribute('scandi_provider_user_id', $facebookUser->identifier);
         $this->customer->setCustomAttribute('scandi_provider_name', $this->provider);
 
-        if ($this->customer->getId()) {
-            $customer = $this->customerRepository->save($this->customer);
-        } else {
-            $customer = $this->accountManagement->createAccount($this->customer);
-        }
-
-        return $customer;
+        return $this->accountManagement->createAccount($this->customer);
     }
 }
