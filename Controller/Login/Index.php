@@ -25,7 +25,7 @@ use Scandiweb\SocialLogin\HybridAuth\HybridAuth;
 use Exception;
 use Scandiweb\SocialLogin\Logger\Logger;
 
-abstract class AbstractProviderAction extends Action
+class Index extends Action
 {
 
     /**
@@ -72,6 +72,7 @@ abstract class AbstractProviderAction extends Action
      * @param CustomerSession             $customerSession
      * @param AccountManagementInterface  $accountManagement
      * @param CustomerInterface           $customer
+     * @param Logger                      $logger
      */
     public function __construct(
         Context $context,
@@ -99,6 +100,8 @@ abstract class AbstractProviderAction extends Action
      */
     public function execute()
     {
+        $this->provider = $this->getRequest()->getParam('provider');
+
         try {
             $adapter = $this->hybridAuth->authenticate($this->provider);
             /** @var $user Hybrid_User_Profile */

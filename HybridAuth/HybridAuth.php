@@ -19,8 +19,11 @@ class HybridAuth extends Hybrid_Auth
     /**
      * Providers
      */
-    const FACEBOOK = 'facebook';
-    const TWITTER = 'twitter';
+    const FACEBOOK  = 'facebook';
+    const TWITTER   = 'twitter';
+    const GOOGLE    = 'google';
+    const INSTAGRAM = 'instagram';
+    const YAHOO     = 'yahoo';
 
     /**
      * HybridAuth constructor
@@ -30,6 +33,9 @@ class HybridAuth extends Hybrid_Auth
      */
     public function __construct(Config $config, UrlInterface $url)
     {
+        $vendorPath = require BP . '/app/etc/vendor_path.php';
+        $vendorPath = BP . "/{$vendorPath}/";
+
         parent::__construct([
             'base_url' => $url->getBaseUrl() . '/sociallogin/endpoint',
             'providers' => [
@@ -50,6 +56,31 @@ class HybridAuth extends Hybrid_Auth
                         'secret' => $config->getProviderApiSecret(self::TWITTER)
                     ],
                     'includeEmail' => true
+                ],
+                ucfirst(self::GOOGLE) => [
+                    'enabled' => $config->isProviderEnabled(self::GOOGLE),
+                    'keys'    => [
+                        'id'     => $config->getProviderApiKey(self::GOOGLE),
+                        'secret' => $config->getProviderApiSecret(self::GOOGLE)
+                    ]
+                ],
+                ucfirst(self::INSTAGRAM) => [
+                    'enabled' => $config->isProviderEnabled(self::INSTAGRAM),
+                    'keys'    => [
+                        'id'     => $config->getProviderApiKey(self::INSTAGRAM),
+                        'secret' => $config->getProviderApiSecret(self::INSTAGRAM)
+                    ],
+                    'wrapper' => [
+                        'path'  => $vendorPath . 'hybridauth/hybridauth/additional-providers/hybridauth-instagram/Providers/Instagram.php',
+                        'class' => 'Hybrid_Providers_Instagram'
+                    ]
+                ],
+                ucfirst(self::YAHOO) => [
+                    'enabled' => $config->isProviderEnabled(self::YAHOO),
+                    'keys'    => [
+                        'key'    => $config->getProviderApiKey(self::YAHOO),
+                        'secret' => $config->getProviderApiSecret(self::YAHOO)
+                    ]
                 ]
             ]
         ]);

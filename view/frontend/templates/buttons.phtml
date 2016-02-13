@@ -1,0 +1,31 @@
+<?php
+/**
+ * Scandiweb_SocialLogin
+ *
+ * @category    Scandiweb
+ * @package     Scandiweb_SocialLogin
+ * @author      Viktors Vipolzovs <info@scandiweb.com>
+ * @copyright   Copyright (c) 2016 Scandiweb, Ltd (http://scandiweb.com)
+ */
+?>
+<?php /** @var $this Scandiweb\SocialLogin\Block\Providers */ ?>
+
+<?php if (($providers = $this->getProviders()) && count($providers) > 0): ?>
+
+    <div class="block block-sociallogin">
+        <div class="block-title">
+            <strong id="block-sociallogin-heading" role="heading"><?php echo __('Social Login'); ?></strong>
+        </div>
+
+        <div class="block-content" aria-labelledby="block-sociallogin-heading">
+            <?php foreach($providers as $key => $provider): ?>
+                <a href="<?php echo $provider['url'] ?>"
+                   class="action primary sociallogin sociallogin-<?php echo $key; ?>"
+                   id="sociallogin-<?php echo $key; ?>">
+                    <span><?php echo __('Sign in with') . ' ' . ucfirst($key); ?></span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+<?php endif; ?>
