@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Scandiweb_SocialLogin
+*
+* @category    Scandiweb
+* @package     Scandiweb_SocialLogin
+* @author      Viktors Vipolzovs <info@scandiweb.com>
+* @copyright   Copyright (c) 2016 Scandiweb, Ltd (http://scandiweb.com)
+*/
+-->
+<config>
+    <default>
+        <social_login>
+            <facebook>
+                <sort_order>0</sort_order>
+            </facebook>
+
+            <twitter>
+                <sort_order>1</sort_order>
+            </twitter>
+
+            <google>
+                <sort_order>2</sort_order>
+            </google>
+
+            <instagram>
+                <sort_order>3</sort_order>
+            </instagram>
+
+            <yahoo>
+                <sort_order>4</sort_order>
+            </yahoo>
+        </social_login>
+    </default>
+</config>
