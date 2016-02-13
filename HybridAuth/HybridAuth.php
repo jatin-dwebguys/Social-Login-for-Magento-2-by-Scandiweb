@@ -27,6 +27,11 @@ class HybridAuth extends Hybrid_Auth
     const YAHOO     = 'yahoo';
 
     /**
+     * @var Config
+     */
+    protected static $hybridConfig;
+
+    /**
      * HybridAuth constructor
      *
      * @param Config       $config
@@ -34,6 +39,8 @@ class HybridAuth extends Hybrid_Auth
      */
     public function __construct(Config $config, UrlInterface $url)
     {
+       HybridAuth::$hybridConfig = $config;
+
         $vendorPath = require BP . '/app/etc/vendor_path.php';
         $vendorPath = BP . "/{$vendorPath}/";
 
@@ -92,6 +99,22 @@ class HybridAuth extends Hybrid_Auth
             // TODO: Rewrite this using a more better solution
             parent::__construct([]);
         }
+    }
+
+    /**
+     * Return array listing all enabled providers
+     *
+     * @return array
+     */
+    public static function getProviders()
+    {
+        $providers = parent::getProviders();
+
+        foreach ($providers as $key => $provider) {
+            $providers[$key]['order'] = HybridAuth::$hybridConfig->getProviderOrder(strtolower($key));
+        }
+
+        return $providers;
     }
 
 }

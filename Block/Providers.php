@@ -48,7 +48,28 @@ class Providers extends Template
 
         foreach ($hybridProviders as $key => $provider) {
             $providers[strtolower($key)]['url'] = $this->getUrl('sociallogin/login', ['provider' => strtolower($key)]);
+            $providers[strtolower($key)]['order'] = $provider['order'];
         }
+
+        return $providers;
+    }
+
+    /**
+     * Get all enabled providers with sort order
+     *
+     * @return array
+     */
+    public function getProvidersWithSortOrder()
+    {
+        $providers = $this->getProviders();
+
+        uasort($providers, function($a, $b) {
+            if ($a['order'] == $b['order']) {
+                return 0;
+            }
+
+            return ($a['order'] < $b['order']) ? -1 : 1;
+        });
 
         return $providers;
     }

@@ -67,4 +67,15 @@ class Config
         return $this->scopeConfig->getValue('social_login/' . $provider . '/api_secret');
     }
 
+    /**
+     * Get provider sort order
+     *
+     * @param $provider
+     * @return mixed
+     */
+    public function getProviderOrder($provider)
+    {
+        return $this->scopeConfig->getValue('social_login/' . $provider . '/sort_order');
+    }
+
 }
