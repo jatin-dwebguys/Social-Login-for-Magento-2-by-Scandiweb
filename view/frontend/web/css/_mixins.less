@@ -1,0 +1,26 @@
+/**
+* Scandiweb_SocialLogin
+*
+* @category    Scandiweb
+* @package     Scandiweb_SocialLogin
+* @author      Viktors Vipolzovs <info@scandiweb.com>
+* @copyright   Copyright (c) 2016 Scandiweb, Ltd (http://scandiweb.com)
+*/
+
+.sociallogin-button(@bg, @border-color) {
+  width: 100%;
+  margin-bottom: 10px;
+  background-color: @bg;
+  border-color: @border-color;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    width: 200px;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: darken(@bg, 10%);
+    border-color: darken(@border-color, 10%);
+  }
+}

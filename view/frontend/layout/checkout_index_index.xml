@@ -12,6 +12,10 @@
 <page>
     <update handle="checkout_index_index"/>
 
+    <head>
+        <css src="Scandiweb_SocialLogin::css/sociallogin.css" media="all"/>
+    </head>
+
     <body>
         <referenceContainer name="content">
             <block class="Scandiweb\SocialLogin\Block\Providers" name="sociallogin.login" before="-" template="Scandiweb_SocialLogin::buttons.phtml"/>
