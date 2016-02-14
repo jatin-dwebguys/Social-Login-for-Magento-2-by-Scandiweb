@@ -21,7 +21,10 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\Action\Context;
 use Magento\Customer\Model\Session as CustomerSession;
+use Scandiweb\SocialLogin\Api\CustomerProviderRepositoryInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Scandiweb\SocialLogin\Api\CustomerRepositoryInterface;
+use Scandiweb\SocialLogin\Api\Data\CustomerProviderInterface;
 use Scandiweb\SocialLogin\HybridAuth\HybridAuth;
 use Exception;
 use Scandiweb\SocialLogin\Logger\Logger;
@@ -45,6 +48,11 @@ class Index extends Action
     protected $customerRepository;
 
     /**
+     * @var CustomerProviderRepositoryInterface
+     */
+    protected $customerProviderRepository;
+
+    /**
      * @var MagentoCustomerRepositoryInterface
      */
     protected $magentoCustomerRepository;
@@ -65,6 +73,11 @@ class Index extends Action
     protected $customer;
 
     /**
+     * @var CustomerProviderInterface
+     */
+    protected $customerProvider;
+
+    /**
      * @var Logger
      */
     protected $logger;
@@ -72,31 +85,37 @@ class Index extends Action
     /**
      * Facebook constructor
      *
-     * @param Context                            $context
-     * @param HybridAuth                         $hybridAuth
-     * @param CustomerRepositoryInterface        $customerRepository
-     * @param MagentoCustomerRepositoryInterface $magentoCustomerRepository
-     * @param CustomerSession                    $customerSession
-     * @param AccountManagementInterface         $accountManagement
-     * @param CustomerInterface                  $customer
-     * @param Logger                             $logger
+     * @param Context                             $context
+     * @param HybridAuth                          $hybridAuth
+     * @param CustomerRepositoryInterface         $customerRepository
+     * @param CustomerProviderRepositoryInterface $customerProviderRepository
+     * @param MagentoCustomerRepositoryInterface  $magentoCustomerRepository
+     * @param CustomerSession                     $customerSession
+     * @param AccountManagementInterface          $accountManagement
+     * @param CustomerInterface                   $customer
+     * @param CustomerProviderInterface           $customerProvider
+     * @param Logger                              $logger
      */
     public function __construct(
         Context $context,
         HybridAuth $hybridAuth,
         CustomerRepositoryInterface $customerRepository,
+        CustomerProviderRepositoryInterface $customerProviderRepository,
         MagentoCustomerRepositoryInterface $magentoCustomerRepository,
         CustomerSession $customerSession,
         AccountManagementInterface $accountManagement,
         CustomerInterface $customer,
+        CustomerProviderInterface $customerProvider,
         Logger $logger
     ) {
         $this->hybridAuth = $hybridAuth;
         $this->customerRepository = $customerRepository;
+        $this->customerProviderRepository = $customerProviderRepository;
         $this->magentoCustomerRepository = $magentoCustomerRepository;
         $this->customerSession = $customerSession;
         $this->accountManagement = $accountManagement;
         $this->customer = $customer;
+        $this->customerProvider = $customerProvider;
         $this->logger = $logger;
 
         parent::__construct($context);
@@ -129,30 +148,30 @@ class Index extends Action
                 ));
             } else {
                 try {
-                    $this->customer = $this->magentoCustomerRepository->get('viktor.vipolzov@gmail.com');
-                } finally {
-                    $customer = $this->create($user);
+                    $this->customer = $this->magentoCustomerRepository->get($user->email);
+                } catch (NoSuchEntityException $e) {}
 
-                    if ($this->customer->getId() == $customer->getId()) {
-                        $this->messageManager->addSuccess(__(
-                            "We have discovered you already have an account at our store."
-                            . " Your %1 account is now connected to your store account.", ucfirst($this->provider)
-                        ));
-                    } else {
-                        $this->messageManager->addSuccess(__(
-                            "Your %1 account is now connected to your new user account at our store.", ucfirst($this->provider)
-                        ));
+                $customer = $this->create($user);
 
-                        if (!$user->email || !$user->firstName || !$user->lastName) {
-                            $this->messageManager->addWarning(__(
-                                'Not all data were obtained from the social network. Please correct your personal data on <a href="%1">account information</a> page.',
-                                $this->_url->getUrl('customer/account/edit')
-                            ));
-                        }
+                if ($this->customer->getId() == $customer->getId()) {
+                    $this->messageManager->addSuccess(__(
+                        "We have discovered you already have an account at our store."
+                        . " Your %1 account is now connected to your store account.", ucfirst($this->provider)
+                    ));
+                } else {
+                    $this->messageManager->addSuccess(__(
+                        "Your %1 account is now connected to your new user account at our store.", ucfirst($this->provider)
+                    ));
+
+                    if (!$user->email || !$user->firstName || !$user->lastName) {
+                        $this->messageManager->addWarning(__(
+                            'Not all data were obtained from the social network. Please correct your personal data on <a href="%1">account information</a> page.',
+                            $this->_url->getUrl('customer/account/edit')
+                        ));
                     }
-
-                    $this->login($customer->getId());
                 }
+
+                $this->login($customer->getId());
             }
         } catch (AlreadyExistsException $e) {
             $this->messageManager->addError($e->getMessage());
@@ -198,36 +217,44 @@ class Index extends Action
     /**
      * Create user by using data from provider
      *
-     * @param Hybrid_User_Profile $facebookUser
+     * @param Hybrid_User_Profile $user
      * @return CustomerInterface
      */
-    private function create(Hybrid_User_Profile $facebookUser)
+    private function create(Hybrid_User_Profile $user)
     {
         if (!$this->customer->getId()) {
-            if ($facebookUser->email) {
-                $this->customer->setEmail($facebookUser->email);
+            if ($user->email) {
+                $this->customer->setEmail($user->email);
             } else {
-                $fakeEmail = $facebookUser->identifier . '@' . $this->provider . '.com';
+                $fakeEmail = $user->identifier . '@' . $this->provider . '.com';
                 $this->customer->setEmail($fakeEmail);
             }
 
-            if ($facebookUser->firstName) {
-                $this->customer->setFirstname($facebookUser->firstName);
+            if ($user->firstName) {
+                $this->customer->setFirstname($user->firstName);
             } else {
-                $this->customer->setFirstname($this->provider . 'Firstname');
+                $this->customer->setFirstname('Firstname');
             }
 
-            if ($facebookUser->lastName) {
-                $this->customer->setLastname($facebookUser->lastName);
+            if ($user->lastName) {
+                $this->customer->setLastname($user->lastName);
             } else {
-                $this->customer->setLastname($this->provider . 'Lastname');
+                $this->customer->setLastname('Lastname');
             }
         }
 
         if (!$this->customer->getId()) {
-            return $this->accountManagement->createAccount($this->customer);
+            $customer = $this->accountManagement->createAccount($this->customer);
+        } else {
+            $customer = $this->magentoCustomerRepository->save($this->customer);
         }
 
-        return $this->magentoCustomerRepository->save($this->customer);
+        $this->customerProvider->setEntityId($customer->getId());
+        $this->customerProvider->setUserId($user->identifier);
+        $this->customerProvider->setProvider($this->provider);
+
+        $this->customerProviderRepository->save($this->customerProvider);
+
+        return $customer;
     }
 }
