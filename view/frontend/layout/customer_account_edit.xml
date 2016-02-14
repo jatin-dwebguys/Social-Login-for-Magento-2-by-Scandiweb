@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Scandiweb_SocialLogin
+*
+* @category    Scandiweb
+* @package     Scandiweb_SocialLogin
+* @author      Viktors Vipolzovs <info@scandiweb.com>
+* @copyright   Copyright (c) 2016 Scandiweb, Ltd (http://scandiweb.com)
+*/
+-->
+<page>
+    <update handle="customer_account_edit"/>
+
+    <referenceContainer name="content">
+        <block class="Scandiweb\SocialLogin\Block\Form\Edit" name="customer_edit" template="Scandiweb_SocialLogin::edit.phtml" cacheable="false"/>
+    </referenceContainer>
+</page>

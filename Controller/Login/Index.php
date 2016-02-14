@@ -14,7 +14,8 @@ use Hybrid_User_Profile;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\InputException;
-use Scandiweb\SocialLogin\Api\AccountManagementInterface;
+use Magento\Customer\Api\AccountManagementInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface as MagentoCustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\ResponseInterface;
@@ -44,6 +45,11 @@ class Index extends Action
     protected $customerRepository;
 
     /**
+     * @var MagentoCustomerRepositoryInterface
+     */
+    protected $magentoCustomerRepository;
+
+    /**
      * @var CustomerSession
      */
     protected $customerSession;
@@ -66,18 +72,20 @@ class Index extends Action
     /**
      * Facebook constructor
      *
-     * @param Context                     $context
-     * @param HybridAuth                  $hybridAuth
-     * @param CustomerRepositoryInterface $customerRepository
-     * @param CustomerSession             $customerSession
-     * @param AccountManagementInterface  $accountManagement
-     * @param CustomerInterface           $customer
-     * @param Logger                      $logger
+     * @param Context                            $context
+     * @param HybridAuth                         $hybridAuth
+     * @param CustomerRepositoryInterface        $customerRepository
+     * @param MagentoCustomerRepositoryInterface $magentoCustomerRepository
+     * @param CustomerSession                    $customerSession
+     * @param AccountManagementInterface         $accountManagement
+     * @param CustomerInterface                  $customer
+     * @param Logger                             $logger
      */
     public function __construct(
         Context $context,
         HybridAuth $hybridAuth,
         CustomerRepositoryInterface $customerRepository,
+        MagentoCustomerRepositoryInterface $magentoCustomerRepository,
         CustomerSession $customerSession,
         AccountManagementInterface $accountManagement,
         CustomerInterface $customer,
@@ -85,6 +93,7 @@ class Index extends Action
     ) {
         $this->hybridAuth = $hybridAuth;
         $this->customerRepository = $customerRepository;
+        $this->magentoCustomerRepository = $magentoCustomerRepository;
         $this->customerSession = $customerSession;
         $this->accountManagement = $accountManagement;
         $this->customer = $customer;
@@ -107,7 +116,7 @@ class Index extends Action
             /** @var $user Hybrid_User_Profile */
             $user = $adapter->getUserProfile();
 
-            $customer = $this->customerRepository->getByProviderIdAndName(
+            $customer = $this->customerRepository->getByProvider(
                 $user->identifier,
                 $this->provider
             );
@@ -120,7 +129,7 @@ class Index extends Action
                 ));
             } else {
                 try {
-                    $this->customer = $this->customerRepository->get($user->email);
+                    $this->customer = $this->magentoCustomerRepository->get($user->email);
 
                     if ($this->customer->getId()
                         && $this->customer->getCustomAttribute('scandi_provider_user_id')
@@ -210,7 +219,7 @@ class Index extends Action
         if ($facebookUser->firstName) {
             $this->customer->setFirstname($facebookUser->firstName);
         } else {
-            $this->customer->setLastname($this->provider . 'Firstname');
+            $this->customer->setFirstname($this->provider . 'Firstname');
         }
 
         if ($facebookUser->lastName) {

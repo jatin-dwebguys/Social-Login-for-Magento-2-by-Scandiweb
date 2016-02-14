@@ -20,37 +20,13 @@ interface CustomerRepositoryInterface
 {
 
     /**
-     * Retrieve customer by user provider id and provider name
+     * Retrieve customer by provider
      *
      * @param int $id
      * @param string $provider
      * @return CustomerInterface | null
      */
-    public function getByProviderIdAndName($id, $provider);
+    public function getByProvider($id, $provider);
 
-    /**
-     * Create customer.
-     *
-     * @api
-     * @param CustomerInterface $customer
-     * @param string $passwordHash
-     * @return CustomerInterface
-     * @throws InputException If bad input is provided
-     * @throws InputMismatchException If the provided email is already used
-     * @throws LocalizedException
-     */
-    public function save(CustomerInterface $customer, $passwordHash = null);
-
-    /**
-     * Retrieve customer
-     *
-     * @api
-     * @param string $email
-     * @param int|null $websiteId
-     * @return CustomerInterface
-     * @throws NoSuchEntityException If customer with the specified email does not exist.
-     * @throws LocalizedException
-     */
-    public function get($email, $websiteId = null);
 
 }
