@@ -16,6 +16,8 @@
                 type="Scandiweb\SocialLogin\Model\ResourceModel\CustomerProviderRepository"/>
     <preference for="Scandiweb\SocialLogin\Api\Data\CustomerProviderInterface"
                 type="Scandiweb\SocialLogin\Model\Data\CustomerProvider"/>
+    <preference for="Magento\Customer\Controller\Account\Logout"
+                type="Scandiweb\SocialLogin\Controller\Account\Logout"/>
 
     <type name="Scandiweb\SocialLogin\Logger\Handler">
         <arguments>
