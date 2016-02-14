@@ -141,6 +141,13 @@ class Index extends Action
                         "Your %1 account is now connected to your new user account at our store.", ucfirst($this->provider)
                     ));
 
+                    if (!$user->email || !$user->firstName || !$user->lastName) {
+                        $this->messageManager->addWarning(__(
+                            'Not all data were obtained from the social network. Please correct your personal data on <a href="%1">account information</a> page.',
+                            $this->_url->getUrl('customer/account/edit')
+                        ));
+                    }
+
                     $this->login($customer->getId());
                 }
             }
@@ -193,9 +200,25 @@ class Index extends Action
      */
     private function create(Hybrid_User_Profile $facebookUser)
     {
-        $this->customer->setEmail($facebookUser->email);
-        $this->customer->setFirstname($facebookUser->firstName);
-        $this->customer->setLastname($facebookUser->lastName);
+        if ($facebookUser->email) {
+            $this->customer->setEmail($facebookUser->email);
+        } else {
+            $fakeEmail = $facebookUser->identifier . '@' . $this->provider . '.com';
+            $this->customer->setEmail($fakeEmail);
+        }
+
+        if ($facebookUser->firstName) {
+            $this->customer->setFirstname($facebookUser->firstName);
+        } else {
+            $this->customer->setLastname($this->provider . 'Firstname');
+        }
+
+        if ($facebookUser->lastName) {
+            $this->customer->setLastname($facebookUser->lastName);
+        } else {
+            $this->customer->setLastname($this->provider . 'Lastname');
+        }
+
         $this->customer->setCustomAttribute('scandi_provider_user_id', $facebookUser->identifier);
         $this->customer->setCustomAttribute('scandi_provider_name', $this->provider);
 

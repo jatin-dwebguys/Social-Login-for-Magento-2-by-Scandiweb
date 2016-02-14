@@ -46,7 +46,7 @@ class HybridAuth extends Hybrid_Auth
 
         try {
             parent::__construct([
-                'base_url' => $url->getBaseUrl() . '/sociallogin/endpoint',
+                'base_url' => $url->getBaseUrl() . 'sociallogin/endpoint',
                 'providers' => [
                     ucfirst(self::FACEBOOK) => [
                         'enabled' => $config->isProviderEnabled(self::FACEBOOK),
