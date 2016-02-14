@@ -10,32 +10,46 @@
 
 namespace Scandiweb\SocialLogin\Model\ResourceModel;
 
-use Magento\Backend\Model\Menu\Builder\Command\Add;
-use Magento\Customer\Api\CustomerMetadataInterface;
-use Magento\Customer\Api\Data\CustomerSearchResultsInterfaceFactory;
-use Magento\Customer\Model\CustomerFactory;
-use Magento\Customer\Model\CustomerRegistry;
-use Magento\Customer\Model\Data\CustomerSecureFactory;
-use Magento\Framework\Api\ExtensibleDataObjectConverter;
-use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Customer\Api\CustomerRepositoryInterface as MagentoCustomerRepositoryInterface;
+use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Scandiweb\SocialLogin\Api\CustomerRepositoryInterface;
-use Magento\Customer\Model\ResourceModel\CustomerRepository as MagentoCustomerRepository;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Api\Data\CustomerInterface as MagentoCustomerInterface;
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Customer\Model\ResourceModel\AddressRepository;
-use Magento\Framework\Api\DataObjectHelper;
-use Magento\Framework\Api\ImageProcessorInterface;
-use Scandiweb\SocialLogin\Model\CustomerFactory as CustomCustomerFactory;
-use Zend\EventManager\EventManager;
+use Scandiweb\SocialLogin\Model\CustomerProviderFactory;
 
-// TODO: Rewrite this class without using MagentoCustomerRepository
-class CustomerRepository extends MagentoCustomerRepository implements CustomerRepositoryInterface
+class CustomerRepository implements CustomerRepositoryInterface
 {
+
+    /**
+     * @var CustomerProviderFactory
+     */
+    protected $customerProviderFactory;
+
+    /**
+     * @var MagentoCustomerRepositoryInterface
+     */
+    protected $customerRepository;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
+     * CustomerRepository constructor
+     *
+     * @param CustomerProviderFactory            $customerProviderFactory
+     * @param MagentoCustomerRepositoryInterface $customerRepository
+     * @param StoreManagerInterface              $storeManager
+     */
+    public function __construct(
+        CustomerProviderFactory $customerProviderFactory,
+        MagentoCustomerRepositoryInterface $customerRepository,
+        StoreManagerInterface $storeManager
+    ) {
+        $this->customerProviderFactory = $customerProviderFactory;
+        $this->customerRepository = $customerRepository;
+        $this->storeManager = $storeManager;
+    }
 
     /**
      * Retrieve customer by provider
@@ -45,24 +59,30 @@ class CustomerRepository extends MagentoCustomerRepository implements CustomerRe
      *
      * @return CustomerInterface | null
      */
-    public function getByProvider($id, $provider)
+    public function getByProvider($id, $provider, $websiteId = null)
     {
-        /** @var \Magento\Customer\Model\ResourceModel\Customer\Collection $collection */
-        $collection = $this->customerFactory->create()->getCollection();
+        if (!$websiteId) {
+            $websiteId = $this->storeManager->getWebsite()->getId();
+        }
 
-        /** @var $customer \Magento\Customer\Model\Customer */
-        $customer = $collection
+        /** @var \Scandiweb\SocialLogin\Model\ResourceModel\CustomerProvider\Collection $collection */
+        $collection = $this->customerProviderFactory->create()->getCollection();
+
+        /** @var \Scandiweb\SocialLogin\Model\CustomerProvider $customerProvider */
+        $customerProvider = $collection
             ->addFieldToSelect('*')
-            ->addAttributeToSelect('scandi_provider_user_id')
-            ->addAttributeToSelect('scandi_provider_name')
-            ->addFieldToFilter('website_id', $this->storeManager->getWebsite()->getId())
-            ->addAttributeToFilter('scandi_provider_user_id', $id)
-            ->addAttributeToFilter('scandi_provider_name', $provider)
+            ->addFieldToFilter('user_id', $id)
+            ->addFieldToFilter('provider', $provider)
             ->load()
             ->getFirstItem();
 
-        if ($customer->getId()) {
-            return $customer->getDataModel();
+        if ($customerProvider->getId()) {
+            /** @var CustomerInterface $customer */
+            $customer = $this->customerRepository->getById($customerProvider->getEntityId());
+
+            if ($customer->getId() && $customer->getWebsiteId() == $websiteId) {
+                return $customer;
+            }
         }
 
         return null;

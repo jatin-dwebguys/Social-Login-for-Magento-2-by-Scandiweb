@@ -129,32 +129,26 @@ class Index extends Action
                 ));
             } else {
                 try {
-                    $this->customer = $this->magentoCustomerRepository->get($user->email);
-
-                    if ($this->customer->getId()
-                        && $this->customer->getCustomAttribute('scandi_provider_user_id')
-                        && $this->customer->getCustomAttribute('scandi_provider_name')
-                    ) {
-                        $provider = $this->customer->getCustomAttribute('scandi_provider_name')->getValue();
-
-                        throw new AlreadyExistsException(__(
-                            'This user is already using another entrance through the social network. Log into the system through %1.',
-                            ucfirst($provider)
-                        ));
-                    }
-
+                    $this->customer = $this->magentoCustomerRepository->get('viktor.vipolzov@gmail.com');
                 } finally {
                     $customer = $this->create($user);
 
-                    $this->messageManager->addSuccess(__(
-                        "Your %1 account is now connected to your new user account at our store.", ucfirst($this->provider)
-                    ));
-
-                    if (!$user->email || !$user->firstName || !$user->lastName) {
-                        $this->messageManager->addWarning(__(
-                            'Not all data were obtained from the social network. Please correct your personal data on <a href="%1">account information</a> page.',
-                            $this->_url->getUrl('customer/account/edit')
+                    if ($this->customer->getId() == $customer->getId()) {
+                        $this->messageManager->addSuccess(__(
+                            "We have discovered you already have an account at our store."
+                            . " Your %1 account is now connected to your store account.", ucfirst($this->provider)
                         ));
+                    } else {
+                        $this->messageManager->addSuccess(__(
+                            "Your %1 account is now connected to your new user account at our store.", ucfirst($this->provider)
+                        ));
+
+                        if (!$user->email || !$user->firstName || !$user->lastName) {
+                            $this->messageManager->addWarning(__(
+                                'Not all data were obtained from the social network. Please correct your personal data on <a href="%1">account information</a> page.',
+                                $this->_url->getUrl('customer/account/edit')
+                            ));
+                        }
                     }
 
                     $this->login($customer->getId());
@@ -209,28 +203,31 @@ class Index extends Action
      */
     private function create(Hybrid_User_Profile $facebookUser)
     {
-        if ($facebookUser->email) {
-            $this->customer->setEmail($facebookUser->email);
-        } else {
-            $fakeEmail = $facebookUser->identifier . '@' . $this->provider . '.com';
-            $this->customer->setEmail($fakeEmail);
+        if (!$this->customer->getId()) {
+            if ($facebookUser->email) {
+                $this->customer->setEmail($facebookUser->email);
+            } else {
+                $fakeEmail = $facebookUser->identifier . '@' . $this->provider . '.com';
+                $this->customer->setEmail($fakeEmail);
+            }
+
+            if ($facebookUser->firstName) {
+                $this->customer->setFirstname($facebookUser->firstName);
+            } else {
+                $this->customer->setFirstname($this->provider . 'Firstname');
+            }
+
+            if ($facebookUser->lastName) {
+                $this->customer->setLastname($facebookUser->lastName);
+            } else {
+                $this->customer->setLastname($this->provider . 'Lastname');
+            }
         }
 
-        if ($facebookUser->firstName) {
-            $this->customer->setFirstname($facebookUser->firstName);
-        } else {
-            $this->customer->setFirstname($this->provider . 'Firstname');
+        if (!$this->customer->getId()) {
+            return $this->accountManagement->createAccount($this->customer);
         }
 
-        if ($facebookUser->lastName) {
-            $this->customer->setLastname($facebookUser->lastName);
-        } else {
-            $this->customer->setLastname($this->provider . 'Lastname');
-        }
-
-        $this->customer->setCustomAttribute('scandi_provider_user_id', $facebookUser->identifier);
-        $this->customer->setCustomAttribute('scandi_provider_name', $this->provider);
-
-        return $this->accountManagement->createAccount($this->customer);
+        return $this->magentoCustomerRepository->save($this->customer);
     }
 }

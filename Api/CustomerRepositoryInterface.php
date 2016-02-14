@@ -28,5 +28,4 @@ interface CustomerRepositoryInterface
      */
     public function getByProvider($id, $provider);
 
-
 }
