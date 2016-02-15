@@ -39,14 +39,14 @@ class HybridAuth extends Hybrid_Auth
      */
     public function __construct(Config $config, UrlInterface $url)
     {
-       HybridAuth::$hybridConfig = $config;
+        HybridAuth::$hybridConfig = $config;
 
         $vendorPath = require BP . '/app/etc/vendor_path.php';
         $vendorPath = BP . "/{$vendorPath}/";
 
         try {
             parent::__construct([
-                'base_url' => $url->getBaseUrl() . 'sociallogin/endpoint',
+                'base_url' => $config->getBaseUrl(),
                 'providers' => [
                     ucfirst(self::FACEBOOK) => [
                         'enabled' => $config->isProviderEnabled(self::FACEBOOK),

@@ -69,22 +69,21 @@ class CustomerRepository implements CustomerRepositoryInterface
         $collection = $this->customerProviderFactory->create()->getCollection();
 
         /** @var \Scandiweb\SocialLogin\Model\CustomerProvider $customerProvider */
-        $customerProvider = $collection
+        $providers = $collection
             ->addFieldToSelect('*')
             ->addFieldToFilter('user_id', $id)
             ->addFieldToFilter('provider', $provider)
-            ->load()
-            ->getFirstItem();
+            ->load();
 
-        if ($customerProvider->getId()) {
+        foreach ($providers as $provider) {
             /** @var CustomerInterface $customer */
-            $customer = $this->customerRepository->getById($customerProvider->getEntityId());
+            $customer = $this->customerRepository->getById($provider->getEntityId());
 
             if ($customer->getId() && $customer->getWebsiteId() == $websiteId) {
                 return $customer;
             }
         }
-
+        
         return null;
     }
 

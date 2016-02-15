@@ -78,4 +78,16 @@ class Config
         return $this->scopeConfig->getValue('social_login/' . $provider . '/sort_order');
     }
 
+    /**
+     * Get base url
+     *
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        $baseUrl = isset($_SERVER['HTTPS']) ? 'https://' : 'http://' . $_SERVER['SERVER_NAME'];
+
+        return $baseUrl . '/sociallogin/endpoint';
+    }
+
 }
