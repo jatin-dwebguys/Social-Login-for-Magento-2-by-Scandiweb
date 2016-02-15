@@ -129,6 +129,7 @@ class Index extends Action
     public function execute()
     {
         $this->provider = $this->getRequest()->getParam('provider');
+        $redirect = $this->_redirect->getRefererUrl();
 
         try {
             $adapter = $this->hybridAuth->authenticate($this->provider);
@@ -168,6 +169,8 @@ class Index extends Action
                             'Not all data were obtained from the social network. Please correct your personal data on <a href="%1">account information</a> page.',
                             $this->_url->getUrl('customer/account/edit')
                         ));
+
+                        $redirect = 'customer/account/edit';
                     }
                 }
 
@@ -185,7 +188,7 @@ class Index extends Action
             ));
         }
 
-        $this->_redirect($this->_redirect->getRefererUrl());
+        $this->_redirect($redirect);
     }
 
     /**
