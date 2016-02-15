@@ -10,6 +10,7 @@
 
 namespace Scandiweb\SocialLogin\Setup;
 
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
@@ -45,7 +46,7 @@ class InstallSchema implements InstallSchemaInterface
                 'entity_id',
                 Table::TYPE_INTEGER,
                 null,
-                ['unsigned' => true, 'nullable' => false, 'default' => '0'],
+                ['unsigned' => true, 'nullable' => false],
                 'Entity Id'
             )
             ->addColumn(
@@ -63,8 +64,12 @@ class InstallSchema implements InstallSchemaInterface
                 'Provider'
             )
             ->addIndex(
-                $installer->getIdxName('customer_provider', ['entity_id']),
-                ['entity_id']
+                $installer->getIdxName(
+                    'customer_provider', ['entity_id', 'user_id'],
+                    AdapterInterface::INDEX_TYPE_UNIQUE
+                ),
+                ['entity_id', 'user_id'],
+                ['type' => AdapterInterface::INDEX_TYPE_UNIQUE]
             )
             ->addForeignKey(
                 $installer->getFkName('customer_provider', 'entity_id', 'customer_entity', 'entity_id'),
