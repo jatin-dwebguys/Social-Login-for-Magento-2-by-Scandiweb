@@ -166,7 +166,7 @@ class Index extends Action
 
                     if (!$user->email || !$user->firstName || !$user->lastName) {
                         $this->messageManager->addWarning(__(
-                            'Not all data were obtained from the social network. Please correct your personal data on <a href="%1">account information</a> page.',
+                            'Not all data were obtained from the social network. Please correct your personal data.',
                             $this->_url->getUrl('customer/account/edit')
                         ));
 
