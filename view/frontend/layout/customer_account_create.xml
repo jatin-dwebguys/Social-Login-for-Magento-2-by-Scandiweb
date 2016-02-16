@@ -23,5 +23,9 @@
         <referenceContainer name="sidebar.main">
             <block class="Scandiweb\SocialLogin\Block\Providers" name="sociallogin.login" template="Scandiweb_SocialLogin::buttons.phtml"/>
         </referenceContainer>
+
+        <referenceContainer name="page.messages">
+            <block class="Scandiweb\SocialLogin\Block\Messages" name="sociallogin.messages"/>
+        </referenceContainer>
     </body>
 </page>
