@@ -19,6 +19,7 @@
             <class>separator-top</class>
             <label>Social Login</label>
             <tab>scandiweb</tab>
+            <resource>Scandiweb_SocialLogin::config_login</resource>
 
             <group id="facebook" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="1">
                 <label>Facebook</label>
