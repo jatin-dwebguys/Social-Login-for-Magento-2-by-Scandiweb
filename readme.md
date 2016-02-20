@@ -7,7 +7,7 @@ Social Login is a Magento 2 extension allowing your customers to login or create
 Run
 ```
 composer config repositories.sociallogin git git@github.com:Viktor-V/SocialLogin.git
-composer require scandiweb/social-login:1.0.0
+composer require scandiweb/social-login:1.0.3
 php -f bin/magento setup:upgrade
 ```
 
