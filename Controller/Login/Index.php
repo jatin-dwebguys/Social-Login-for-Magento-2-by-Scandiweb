@@ -129,7 +129,7 @@ class Index extends Action
     public function execute()
     {
         $this->provider = $this->getRequest()->getParam('provider');
-        $redirect = $this->_redirect->getRefererUrl();
+        $redirect = 'customer/account';
 
         try {
             $adapter = $this->hybridAuth->authenticate($this->provider);
