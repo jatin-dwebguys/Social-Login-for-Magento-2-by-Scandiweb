@@ -13,6 +13,7 @@ namespace Scandiweb\SocialLogin\Block;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Scandiweb\SocialLogin\HybridAuth\HybridAuth;
+use Magento\Customer\Model\Session;
 
 class Providers extends Template
 {
@@ -23,15 +24,22 @@ class Providers extends Template
     protected $hybridAuth;
 
     /**
+     * @var Session
+     */
+    protected $customerSession;
+
+    /**
      * Providers constructor.
      *
      * @param Context    $context
      * @param array      $data
      * @param HybridAuth $hybridAuth
+     * @param Session    $customerSession
      */
-    public function __construct(Context $context, array $data, HybridAuth $hybridAuth)
+    public function __construct(Context $context, array $data, HybridAuth $hybridAuth, Session $customerSession)
     {
         $this->hybridAuth = $hybridAuth;
+        $this->customerSession = $customerSession;
 
         parent::__construct($context, $data);
     }
@@ -72,6 +80,16 @@ class Providers extends Template
         });
 
         return $providers;
+    }
+
+    /**
+     * Is customer logged in
+     *
+     * @return boolean
+     */
+    public function isLoggedIn()
+    {
+        return $this->customerSession->isLoggedIn();
     }
 
 }
