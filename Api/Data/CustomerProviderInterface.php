@@ -45,14 +45,14 @@ interface CustomerProviderInterface
     /**
      * Get user id from social network
      *
-     * @return int
+     * @return string
      */
     public function getUserId();
 
     /**
      * Set user id from social network
      *
-     * @param int $id
+     * @param string $id
      * @return $this
      */
     public function setUserId($id);

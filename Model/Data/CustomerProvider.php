@@ -51,7 +51,7 @@ class CustomerProvider extends AbstractExtensibleObject implements CustomerProvi
     /**
      * Get user id from social network
      *
-     * @return int
+     * @return string
      */
     public function getUserId()
     {
@@ -61,7 +61,7 @@ class CustomerProvider extends AbstractExtensibleObject implements CustomerProvi
     /**
      * Set user id from social network
      *
-     * @param int $id
+     * @param string $id
      *
      * @return $this
      */
