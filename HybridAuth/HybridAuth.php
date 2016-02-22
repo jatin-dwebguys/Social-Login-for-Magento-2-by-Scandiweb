@@ -20,12 +20,13 @@ class HybridAuth extends Hybrid_Auth
     /**
      * Providers
      */
-    const FACEBOOK  = 'facebook';
-    const TWITTER   = 'twitter';
-    const GOOGLE    = 'google';
-    const INSTAGRAM = 'instagram';
-    const YAHOO     = 'yahoo';
-    const LINKEDIN  = 'linkedin';
+    const FACEBOOK      = 'facebook';
+    const TWITTER       = 'twitter';
+    const GOOGLE        = 'google';
+    const INSTAGRAM     = 'instagram';
+    const YAHOO         = 'yahoo';
+    const LINKEDIN      = 'linkedin';
+    const WINDOWS_LIVE  = 'live';
 
     /**
      * @var Config
@@ -97,6 +98,13 @@ class HybridAuth extends Hybrid_Auth
                         'keys'    => [
                             'key'    => $config->getProviderApiKey(self::LINKEDIN),
                             'secret' => $config->getProviderApiSecret(self::LINKEDIN)
+                        ]
+                    ],
+                    ucfirst(self::WINDOWS_LIVE) => [
+                        'enabled' => $config->isProviderEnabled(self::WINDOWS_LIVE),
+                        'keys'    => [
+                            'id'     => $config->getProviderApiKey(self::WINDOWS_LIVE),
+                            'secret' => $config->getProviderApiSecret(self::WINDOWS_LIVE)
                         ]
                     ]
                 ]

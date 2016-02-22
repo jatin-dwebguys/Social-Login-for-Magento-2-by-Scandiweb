@@ -35,6 +35,10 @@
             <linkedin>
                 <sort_order>5</sort_order>
             </linkedin>
+
+            <live>
+                <sort_order>6</sort_order>
+            </live>
         </social_login>
     </default>
 </config>
