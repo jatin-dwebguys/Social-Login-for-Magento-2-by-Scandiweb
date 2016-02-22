@@ -31,6 +31,10 @@
             <yahoo>
                 <sort_order>4</sort_order>
             </yahoo>
+
+            <linkedin>
+                <sort_order>5</sort_order>
+            </linkedin>
         </social_login>
     </default>
 </config>

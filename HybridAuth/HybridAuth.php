@@ -25,6 +25,7 @@ class HybridAuth extends Hybrid_Auth
     const GOOGLE    = 'google';
     const INSTAGRAM = 'instagram';
     const YAHOO     = 'yahoo';
+    const LINKEDIN  = 'linkedin';
 
     /**
      * @var Config
@@ -89,6 +90,13 @@ class HybridAuth extends Hybrid_Auth
                         'keys'    => [
                             'key'    => $config->getProviderApiKey(self::YAHOO),
                             'secret' => $config->getProviderApiSecret(self::YAHOO)
+                        ]
+                    ],
+                    'LinkedIn' => [
+                        'enabled' => $config->isProviderEnabled(self::LINKEDIN),
+                        'keys'    => [
+                            'key'    => $config->getProviderApiKey(self::LINKEDIN),
+                            'secret' => $config->getProviderApiSecret(self::LINKEDIN)
                         ]
                     ]
                 ]
