@@ -85,7 +85,7 @@ class Config
      */
     public function getBaseUrl()
     {
-        $baseUrl = isset($_SERVER['HTTPS']) ? 'https://' : 'http://' . $_SERVER['SERVER_NAME'];
+        $baseUrl = isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['SERVER_NAME'] : 'http://' . $_SERVER['SERVER_NAME'];
 
         return $baseUrl . '/sociallogin/endpoint';
     }
