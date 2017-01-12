@@ -39,6 +39,10 @@
             <live>
                 <sort_order>6</sort_order>
             </live>
+
+            <vkontakte>
+                <sort_order>7</sort_order>
+            </vkontakte>
         </social_login>
     </default>
 </config>

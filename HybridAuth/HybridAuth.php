@@ -27,6 +27,7 @@ class HybridAuth extends Hybrid_Auth
     const YAHOO         = 'yahoo';
     const LINKEDIN      = 'linkedin';
     const WINDOWS_LIVE  = 'live';
+    const VKONTAKTE     = 'vkontakte';
 
     /**
      * @var Config
@@ -105,6 +106,17 @@ class HybridAuth extends Hybrid_Auth
                         'keys'    => [
                             'id'     => $config->getProviderApiKey(self::WINDOWS_LIVE),
                             'secret' => $config->getProviderApiSecret(self::WINDOWS_LIVE)
+                        ]
+                    ],
+                    ucfirst(self::VKONTAKTE) => [
+                        'enabled' => $config->isProviderEnabled(self::VKONTAKTE),
+                        'keys'    => [
+                            'id'     => $config->getProviderApiKey(self::VKONTAKTE),
+                            'secret' => $config->getProviderApiSecret(self::VKONTAKTE)
+                        ],
+                        'wrapper' => [
+                            'path'  => $vendorPath . 'hybridauth/hybridauth/additional-providers/hybridauth-vkontakte/Providers/Vkontakte.php',
+                            'class' => 'Hybrid_Providers_Vkontakte'
                         ]
                     ]
                 ]

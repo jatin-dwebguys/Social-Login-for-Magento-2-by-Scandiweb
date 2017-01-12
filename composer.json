@@ -2,7 +2,7 @@
   "name": "scandiweb/social-login",
   "description": "Social Login for Magento 2",
   "type": "magento2-module",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "require": {
     "hybridauth/hybridauth": "2.6.0"
   },

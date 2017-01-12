@@ -55,7 +55,10 @@ class Providers extends Template
         $hybridProviders = $this->hybridAuth->getProviders();
 
         foreach ($hybridProviders as $key => $provider) {
-            $providers[strtolower($key)]['url'] = $this->getUrl('sociallogin/login', ['provider' => strtolower($key)]);
+            $providers[strtolower($key)]['url'] = $this->getUrl('sociallogin/login', [
+                'provider' => strtolower($key),
+                '_secure'  => $this->_storeManager->getStore()->isCurrentlySecure()
+            ]);
             $providers[strtolower($key)]['order'] = $provider['order'];
         }
 
