@@ -127,8 +127,8 @@ class HybridAuth extends Hybrid_Auth
                             'secret' => $config->getProviderApiSecret(self::DRAUGIEM)
                         ],
                         'wrapper' => [
-                            'path'  => $vendorPath . 'hybridauth/hybridauth/additional-providers/hybridauth-draugiem/Providers/Draugiem.php',
-                            'class' => 'Hybrid_Providers_Draugiem'
+                            'path'  => __DIR__ . '/AdditionalProviders/Draugiem/Draugiem.php',
+                            'class' => \Scandiweb\SocialLogin\HybridAuth\AdditionalProviders\Draugiem\Draugiem::class
                         ]
                     ],
                 ]
