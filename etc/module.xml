@@ -10,7 +10,7 @@
  */
 -->
 <config>
-    <module name="Scandiweb_SocialLogin" setup_version="1.0.9">
+    <module name="Scandiweb_SocialLogin" setup_version="1.0.8">
         <sequence>
             <module name="Magento_Customer"/>
         </sequence>
