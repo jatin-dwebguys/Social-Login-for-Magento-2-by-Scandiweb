@@ -28,6 +28,7 @@ class HybridAuth extends Hybrid_Auth
     const LINKEDIN      = 'linkedin';
     const WINDOWS_LIVE  = 'live';
     const VKONTAKTE     = 'vkontakte';
+    const DRAUGIEM      = 'draugiem';
 
     /**
      * @var Config
@@ -118,7 +119,18 @@ class HybridAuth extends Hybrid_Auth
                             'path'  => $vendorPath . 'hybridauth/hybridauth/additional-providers/hybridauth-vkontakte/Providers/Vkontakte.php',
                             'class' => 'Hybrid_Providers_Vkontakte'
                         ]
-                    ]
+                    ],
+                    ucfirst(self::DRAUGIEM) => [
+                        'enabled' => $config->isProviderEnabled(self::DRAUGIEM),
+                        'keys'    => [
+                            'key'     => $config->getProviderApiKey(self::DRAUGIEM),
+                            'secret' => $config->getProviderApiSecret(self::DRAUGIEM)
+                        ],
+                        'wrapper' => [
+                            'path'  => $vendorPath . 'hybridauth/hybridauth/additional-providers/hybridauth-draugiem/Providers/Draugiem.php',
+                            'class' => 'Hybrid_Providers_Draugiem'
+                        ]
+                    ],
                 ]
             ]);
         } catch (Exception $e) {

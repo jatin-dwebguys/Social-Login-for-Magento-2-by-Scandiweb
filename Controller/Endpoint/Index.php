@@ -38,4 +38,5 @@ class Index extends Action
     {
         $this->endpoint->process();
     }
+
 }

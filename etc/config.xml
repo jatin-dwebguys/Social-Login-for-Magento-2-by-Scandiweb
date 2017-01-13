@@ -43,6 +43,10 @@
             <vkontakte>
                 <sort_order>7</sort_order>
             </vkontakte>
+
+            <draugiem>
+                <sort_order>8</sort_order>
+            </draugiem>
         </social_login>
     </default>
 </config>
