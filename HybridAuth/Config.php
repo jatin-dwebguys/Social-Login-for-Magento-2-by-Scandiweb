@@ -39,10 +39,10 @@ class Config
     public function isProviderEnabled($provider)
     {
         return $this->scopeConfig->isSetFlag(
-            'social_login/' . $provider . '/enabled'
-        )
-        && $this->getProviderApiKey($provider)
-        && $this->getProviderApiSecret($provider);
+                'social_login/' . $provider . '/enabled',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
+            && $this->getProviderApiKey($provider)
+            && $this->getProviderApiSecret($provider);
     }
 
     /**
@@ -53,7 +53,10 @@ class Config
      */
     public function getProviderApiKey($provider)
     {
-        return $this->scopeConfig->getValue('social_login/' . $provider . '/api_key');
+        return $this->scopeConfig->getValue(
+            'social_login/' . $provider . '/api_key',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
     }
 
     /**
@@ -64,7 +67,10 @@ class Config
      */
     public function getProviderApiSecret($provider)
     {
-        return $this->scopeConfig->getValue('social_login/' . $provider . '/api_secret');
+        return $this->scopeConfig->getValue(
+            'social_login/' . $provider . '/api_secret',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
     }
 
     /**
@@ -75,7 +81,10 @@ class Config
      */
     public function getProviderOrder($provider)
     {
-        return $this->scopeConfig->getValue('social_login/' . $provider . '/sort_order');
+        return $this->scopeConfig->getValue(
+            'social_login/' . $provider . '/sort_order',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
     }
 
     /**
