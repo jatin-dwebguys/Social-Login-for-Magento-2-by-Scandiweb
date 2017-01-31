@@ -135,7 +135,7 @@ class HybridAuth extends Hybrid_Auth
                     ucfirst(self::STRAVA) => [
                         'enabled' => $config->isProviderEnabled(self::STRAVA),
                         'keys'    => [
-                            'key'     => $config->getProviderApiKey(self::STRAVA),
+                            'id'     => $config->getProviderApiKey(self::STRAVA),
                             'secret'  => $config->getProviderApiSecret(self::STRAVA)
                         ],
                         'wrapper' => [
