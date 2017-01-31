@@ -24,6 +24,7 @@
             <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
         </arguments>
     </type>
+
     <type name="Scandiweb\SocialLogin\Logger\Logger">
         <arguments>
             <argument name="name" xsi:type="string">SocialLoginLogger</argument>

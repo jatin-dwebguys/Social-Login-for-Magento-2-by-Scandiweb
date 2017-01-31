@@ -47,6 +47,10 @@
             <draugiem>
                 <sort_order>8</sort_order>
             </draugiem>
+
+            <strava>
+                <sort_order>9</sort_order>
+            </strava>
         </social_login>
     </default>
 </config>

@@ -29,6 +29,7 @@ class HybridAuth extends Hybrid_Auth
     const WINDOWS_LIVE  = 'live';
     const VKONTAKTE     = 'vkontakte';
     const DRAUGIEM      = 'draugiem';
+    const STRAVA        = 'strava';
 
     /**
      * @var Config
@@ -124,13 +125,24 @@ class HybridAuth extends Hybrid_Auth
                         'enabled' => $config->isProviderEnabled(self::DRAUGIEM),
                         'keys'    => [
                             'key'     => $config->getProviderApiKey(self::DRAUGIEM),
-                            'secret' => $config->getProviderApiSecret(self::DRAUGIEM)
+                            'secret'  => $config->getProviderApiSecret(self::DRAUGIEM)
                         ],
                         'wrapper' => [
                             'path'  => __DIR__ . '/AdditionalProviders/Draugiem/Draugiem.php',
                             'class' => \Scandiweb\SocialLogin\HybridAuth\AdditionalProviders\Draugiem\Draugiem::class
                         ]
                     ],
+                    ucfirst(self::STRAVA) => [
+                        'enabled' => $config->isProviderEnabled(self::STRAVA),
+                        'keys'    => [
+                            'key'     => $config->getProviderApiKey(self::STRAVA),
+                            'secret'  => $config->getProviderApiSecret(self::STRAVA)
+                        ],
+                        'wrapper' => [
+                            'path'  => $vendorPath . 'hybridauth/hybridauth/additional-providers/hybridauth-strava/Providers/strava.php',
+                            'class' => 'Hybrid_Providers_Strava'
+                        ]
+                    ]
                 ]
             ]);
         } catch (Exception $e) {
