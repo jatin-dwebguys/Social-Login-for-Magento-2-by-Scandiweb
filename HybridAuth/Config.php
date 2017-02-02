@@ -11,6 +11,8 @@
 namespace Scandiweb\SocialLogin\HybridAuth;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\UrlInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Config
 {
@@ -21,13 +23,19 @@ class Config
     protected $scopeConfig;
 
     /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
      * Config constructor.
      *
      * @param ScopeConfigInterface $scopeConfig
      */
-    public function __construct(ScopeConfigInterface $scopeConfig)
+    public function __construct(ScopeConfigInterface $scopeConfig, StoreManagerInterface $storeManager)
     {
         $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -94,9 +102,10 @@ class Config
      */
     public function getBaseUrl()
     {
-        $baseUrl = isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['SERVER_NAME'] : 'http://' . $_SERVER['SERVER_NAME'];
+        /** @var \Magento\Store\Model\Store $store */
+        $store = $this->storeManager->getStore();
 
-        return $baseUrl . '/sociallogin/endpoint';
+        return $store->getUrl('sociallogin/endpoint', ['_secure' => $store->isCurrentlySecure()]);
     }
 
 }

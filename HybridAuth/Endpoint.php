@@ -16,15 +16,21 @@ class Endpoint extends Hybrid_Endpoint
 {
 
     /**
-     * Process OpenID realm reques
+     * Process OpenID realm request
      *
      * @return void
      */
     protected function processOpenidRealm()
     {
-        // TODO: rewrite this method
-        $baseUrl = isset($_SERVER['HTTPS']) ? 'https://' . $_SERVER['SERVER_NAME'] : 'http://' . $_SERVER['SERVER_NAME'];
-        header('Location: ' . $baseUrl);
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+
+        /** @var \Magento\Store\Model\Store $store */
+        $store = $objectManager->get(\Magento\Store\Model\StoreManagerInterface::class)->getStore();
+        $url = $store->getUrl(null, ['_secure' => $store->isCurrentlySecure()]);
+
+        /** @var \Magento\Framework\App\Response\Http $response */
+        $response = $objectManager->get(\Magento\Framework\App\Response\Http::class);
+        $response->setRedirect($url);
     }
 
 }
