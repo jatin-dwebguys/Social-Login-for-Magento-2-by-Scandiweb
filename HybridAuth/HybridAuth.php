@@ -139,8 +139,8 @@ class HybridAuth extends Hybrid_Auth
                             'secret'  => $config->getProviderApiSecret(self::STRAVA)
                         ],
                         'wrapper' => [
-                            'path'  => $vendorPath . 'hybridauth/hybridauth/additional-providers/hybridauth-strava/Providers/strava.php',
-                            'class' => 'Hybrid_Providers_Strava'
+                            'path'  => __DIR__ . '/AdditionalProviders/Strava/Strava.php',
+                            'class' => \Scandiweb\SocialLogin\HybridAuth\AdditionalProviders\Strava\Strava::class
                         ]
                     ]
                 ]
